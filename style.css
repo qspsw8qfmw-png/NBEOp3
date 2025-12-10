@@ -32,6 +32,7 @@ button {
     border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 button:hover {
@@ -48,4 +49,13 @@ button:hover {
     background: #eaf0ff;
     border-left: 4px solid #2a4f9d;
     border-radius: 8px;
+}
+
+#userQuestion {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
 }
