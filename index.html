@@ -1,55 +1,138 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NBEO Part 3 Practice</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NBEO Part 3 - Practice</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <header>
-        <h1>NBEO Part 3 Encounter Simulator</h1>
-    </header>
+  <div id="timer" title="Remaining time">
+    <span id="timer-label">Time Left</span>
+    <span id="time">15:00</span>
+    <button id="reset-timer" class="small-btn" aria-label="Reset timer">Reset</button>
+  </div>
 
-    <main>
+  <div id="times-up" class="hidden">TIME'S UP</div>
 
-        <section class="card">
-            <h2>Generate Patient Encounter</h2>
-            <button id="generateBtn">Generate Encounter</button>
+  <main class="container">
+    <h1>NBEO Part 3 — Case Simulation</h1>
 
-            <div id="encounterBox" class="hidden">
-                <h3>Chief Complaint:</h3>
-                <p id="chiefComplaint"></p>
+    <section id="steps">
+      <!-- Step navigation -->
+      <div id="progress">Step <span id="step-num">1</span> / <span id="step-total">6</span></div>
 
-                <h3>Past Medical History:</h3>
-                <p id="medicalHistory"></p>
+      <!-- Step 1: Case History -->
+      <div class="step" id="step-case-history" data-step="0">
+        <h2>Case History</h2>
+        <label>Chief Complaint
+          <input type="text" id="chief-complaint" placeholder="e.g., blurry vision OD" />
+        </label>
+        <label>Previous Medical Diagnoses
+          <textarea id="prev-med" placeholder="List prior diagnoses, surgeries..."></textarea>
+        </label>
+        <label>Family / Ocular History
+          <textarea id="family-history" placeholder="Family ocular disease, etc."></textarea>
+        </label>
+        <label>Other Notes
+          <textarea id="case-notes" placeholder="Anything else the candidate should know"></textarea>
+        </label>
+      </div>
 
-                <h3>Family / Ocular History:</h3>
-                <p id="familyHistory"></p>
+      <!-- Step 2: Slit Lamp -->
+      <div class="step hidden" id="step-slit" data-step="1">
+        <h2>Slit Lamp Exam Findings</h2>
+        <label>External / Lids / Lashes
+          <textarea id="slit-external" placeholder="Findings..."></textarea>
+        </label>
+        <label>Conjunctiva / Cornea
+          <textarea id="slit-conj-cornea" placeholder="Findings..."></textarea>
+        </label>
+        <label>Anter Chamber / Lens
+          <textarea id="slit-ac-lens" placeholder="Findings..."></textarea>
+        </label>
+      </div>
 
-                <h3>Patient Questions:</h3>
-                <input type="text" id="userQuestion" placeholder="Ask a question about this patient">
-                <button id="askBtn">Ask Patient</button>
-                <p id="patientAnswer"></p>
-            </div>
-        </section>
+      <!-- Step 3: Fundus -->
+      <div class="step hidden" id="step-fundus" data-step="2">
+        <h2>Fundus Exam Findings</h2>
+        <label>Posterior Segment (OD)
+          <textarea id="fundus-od" placeholder="Describe OD..."></textarea>
+        </label>
+        <label>Posterior Segment (OS)
+          <textarea id="fundus-os" placeholder="Describe OS..."></textarea>
+        </label>
+        <label>IOP (if measured)
+          <input type="text" id="iop" placeholder="OD / OS (e.g., 16 / 18)" />
+        </label>
+      </div>
 
-        <section class="card">
-            <h2>Checklist</h2>
-            <ul id="checklist">
-                <li><input type="checkbox"> Case history</li>
-                <li><input type="checkbox"> Entrance testing</li>
-                <li><input type="checkbox"> Slit lamp</li>
-                <li><input type="checkbox"> Tonometry</li>
-                <li><input type="checkbox"> Gonioscopy (if needed)</li>
-                <li><input type="checkbox"> Dilation (if needed)</li>
-                <li><input type="checkbox"> Assessment & Plan</li>
-            </ul>
-        </section>
+      <!-- Step 4: Refraction -->
+      <div class="step hidden" id="step-refraction" data-step="3">
+        <h2>Refraction</h2>
+        <label>Current RX (OD)
+          <input type="text" id="rx-od" placeholder="-1.00 -1.00 x 090" />
+        </label>
+        <label>Current RX (OS)
+          <input type="text" id="rx-os" placeholder="-0.75 -0.50 x 180" />
+        </label>
+        <label>VA (Unaided / Pinhole / Corrected)
+          <input type="text" id="va" placeholder="e.g., 20/40 -> 20/25" />
+        </label>
+        <label>Refraction Notes
+          <textarea id="refraction-notes"></textarea>
+        </label>
+      </div>
 
-    </main>
+      <!-- Step 5: Orders -->
+      <div class="step hidden" id="step-orders" data-step="4">
+        <h2>Additional Tests / Orders</h2>
+        <div class="orders-grid">
+          <label><input type="checkbox" class="order-item" value="OCT macula" /> OCT macula</label>
+          <label><input type="checkbox" class="order-item" value="OCT RNFL" /> OCT RNFL</label>
+          <label><input type="checkbox" class="order-item" value="Visual fields (HVF 24-2)" /> Visual fields (HVF 24-2)</label>
+          <label><input type="checkbox" class="order-item" value="Fundus photos" /> Fundus photos</label>
+          <label><input type="checkbox" class="order-item" value="Fluorescein angiography" /> FA</label>
+        </div>
 
-    <script src="script.js"></script>
+        <div class="custom-order">
+          <input id="custom-order-text" placeholder="Add a custom order (press Add)" />
+          <button id="add-custom-order" class="small-btn">Add</button>
+        </div>
+
+        <div id="orders-list">
+          <h4>Orders to submit</h4>
+          <ul id="selected-orders"></ul>
+        </div>
+
+        <label>Order Notes
+          <textarea id="order-notes" placeholder="Reason for testing, urgency, location..."></textarea>
+        </label>
+      </div>
+
+      <!-- Step 6: Assessment & Plan -->
+      <div class="step hidden" id="step-assessment" data-step="5">
+        <h2>Assessment & Plan</h2>
+        <label>Assessment / Diagnosis
+          <textarea id="assessment" placeholder="List diagnoses and differential"></textarea>
+        </label>
+        <label>Plan (treatment, testing, follow-up)
+          <textarea id="plan" placeholder="Treatment, prescriptions, instructions, follow-up"></textarea>
+        </label>
+        <div class="actions-row">
+          <button id="download-json" class="action-btn">Download JSON</button>
+          <button id="print-case" class="action-btn">Print Case</button>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="nav">
+        <button id="prev-btn" class="nav-btn">Previous</button>
+        <button id="next-btn" class="nav-btn">Next</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
-
